@@ -2,6 +2,7 @@
 <html>
 <head>
   <title>IoT Dashboard</title>
+
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
   <!-- Firebase -->
@@ -25,9 +26,16 @@
 <canvas id="chart"></canvas>
 
 <script>
-  // 🔥 Replace with YOUR Firebase config
+
+  // ✅ FULL Firebase Config (FIXED)
   var firebaseConfig = {
-    databaseURL: "https://monitoring-station-469f4-default-rtdb.asia-southeast1.firebasedatabase.app/"
+    apiKey: "AIzaSyDM6xpDiadC5_yr7lR2T1ecMz0jBS1px9k",
+    authDomain: "monitoring-station-469f4.firebaseapp.com",
+    databaseURL: "https://monitoring-station-469f4-default-rtdb.asia-southeast1.firebasedatabase.app",
+    projectId: "monitoring-station-469f4",
+    storageBucket: "monitoring-station-469f4.firebasestorage.app",
+    messagingSenderId: "106314834056",
+    appId: "1:106314834056:web:648f736294693b6ae5ff3d"
   };
 
   firebase.initializeApp(firebaseConfig);
@@ -52,6 +60,8 @@
   ref.limitToLast(10).on("value", function(snapshot) {
     var data = snapshot.val();
 
+    if (!data) return;
+
     labels.length = 0;
     tempData.length = 0;
 
@@ -68,6 +78,7 @@
 
     chart.update();
   });
+
 </script>
 
 </body>
