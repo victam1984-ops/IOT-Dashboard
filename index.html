@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>IoT Dashboard</title>
+
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <!-- Firebase -->
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+
+  <style>
+    body { font-family: Arial; text-align: center; }
+    canvas { max-width: 90%; }
+  </style>
+</head>
+
+<body>
+
+<h2>🌐 IoT Live Dashboard</h2>
+
+<h3>Temperature: <span id="temp">--</span> °C</h3>
+<h3>Humidity: <span id="hum">--</span> %</h3>
+<h3>CO2: <span id="co2">--</span></h3>
+
+<canvas id="chart"></canvas>
+
+<script>
+
+  // ✅ Correct Firebase Config (from your screenshot)
+  var firebaseConfig = {
+    apiKey: "AIzaSyDM6xpDiadC5_yr7lR2T1ecMz0jBS1px9k",
+    authDomain: "monitoring-station-469f4.firebaseapp.com",
+    databaseURL: "https://monitoring-station-469f4-default-rtdb.asia-southeast1.firebasedatabase.app",
+    projectId: "monitoring-station-469f4",
+    storageBucket: "monitoring-station-469f4.firebasestorage.app",
+    messagingSenderId: "106314834056",
+    appId: "1:106314834056:web:2c771b9ac210ac4ae5ff3d"
+  };
+
+  firebase.initializeApp(firebaseConfig);
+
+  var ref = firebase.database().ref("sensor_data");
+
+  var labels = [];
+  var tempData = [];
+
+  var chart = new Chart(document.getElementById("chart"), {
+    type: 'line',
+    data: {
+      labels: labels,
+      datasets: [{
+        label: 'Temperature',
+        data: tempData,
+        borderWidth: 2
+      }]
+    }
+  });
+
+  ref.limitToLast(10).on("value", function(snapshot) {
+    var data = snapshot.val();
+
+    if (!data) return;
+
+    labels.length = 0;
+    tempData.length = 0;
+
+    for (var key in data) {
+      labels.push(key);
+      tempData.push(data[key].temperature);
+    }
+
+    var lastKey = Object.keys(data).pop();
+
+    document.getElementById("temp").innerText = data[lastKey].temperature;
+    document.getElementById("hum").innerText = data[lastKey].humidity;
+    document.getElementById("co2").innerText = data[lastKey].co2;
+
+    chart.update();
+  });
+
+</script>
+
+</body>
+</html>
